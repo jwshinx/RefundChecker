@@ -1,4 +1,4 @@
-class Settlement
+class Cim 
 
  def initialize params
   check_valid_attributes params
