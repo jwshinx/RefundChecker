@@ -9,7 +9,7 @@ describe "Cim" do
   it "should be valid" do
    cim.should be_instance_of( Cim )
   end
-  describe "when initializing" do
+  describe "when validating" do
 
    describe "txn-date" do
     describe "not provided" do
