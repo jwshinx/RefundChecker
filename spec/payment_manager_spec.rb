@@ -9,6 +9,26 @@ describe "PaymentManager" do
   it "should be valid" do
    payment_manager.should be_instance_of( PaymentManager )
   end
+  describe "settlement_count" do
+   it "should be 2" do
+    payment_manager.cim_count.should == 2
+   end
+  end
+  describe "cim_count" do
+   it "should be 2" do
+    payment_manager.cim_count.should == 2
+   end
+  end
+  describe "cim_order" do
+   it "should be desc" do
+    payment_manager.cim_order.should == :desc 
+   end
+  end
+  describe "settlement_order" do
+   it "should be desc" do
+    payment_manager.settlement_order.should == :asc 
+   end
+  end
 
   describe "when validating" do
 
@@ -24,6 +44,21 @@ describe "PaymentManager" do
       expect { 
        pm = FactoryGirl.build(:bad_cim_count_payment_manager) 
       }.to raise_error(Exception, /Invalid cim count/)
+     end
+    end
+   end
+
+   describe "cim-order" do
+    describe "not valid" do
+     it "should default to *desc*" do
+      pm = FactoryGirl.build(:bad_cim_order_payment_manager) 
+      pm.cim_order.should == :desc
+     end
+    end
+    describe "not provided" do
+     it "should default to *desc*" do
+      pm = FactoryGirl.build(:no_cim_order_payment_manager) 
+      pm.cim_order.should == :desc
      end
     end
    end
@@ -44,46 +79,20 @@ describe "PaymentManager" do
     end
    end 
 
+   describe "settlement-order" do
+    describe "not valid" do
+     it "should default to *desc*" do
+      pm = FactoryGirl.build(:bad_settlement_order_payment_manager) 
+      pm.settlement_order.should == :desc
+     end
+    end
+    describe "not provided" do
+     it "should default to *desc*" do
+      pm = FactoryGirl.build(:no_settlement_order_payment_manager) 
+      pm.settlement_order.should == :desc
+     end
+    end
+   end
   end
  end
 end
-
-=begin
-   describe "amount" do
-    describe "not provided" do
-     it "should raise exception" do
-      expect { 
-       s = FactoryGirl.build(:no_amount_payment_manager) 
-      }.to raise_error(Exception, /Invalid amount/)
-     end
-    end
-    describe "not number" do
-     it "should raise exception" do
-      expect { 
-       s = FactoryGirl.build(:bad_amount_payment_manager) 
-      }.to raise_error(Exception, /Invalid amount/)
-     end
-    end
-   end 
-
-   describe "type" do
-    describe "not provided" do
-     it "should raise exception" do
-      expect { 
-       s = FactoryGirl.build(:no_type_payment_manager) 
-      }.to raise_error(Exception, /Invalid transaction type/)
-     end
-    end
-    describe "not number" do
-     it "should raise exception" do
-      expect { 
-       s = FactoryGirl.build(:bad_type_payment_manager) 
-      }.to raise_error(Exception, /Invalid transaction type/)
-     end
-    end
-   end 
-
-  end
- end
-end
-=end
