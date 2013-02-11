@@ -7,6 +7,14 @@ class PaymentManager
   params.has_key?(:settlement_count) ? @settlement_count = params[:settlement_count] : @settlement_count = 0
   (params.has_key?(:cim_order) && params[:cim_order] == :asc) ? @cim_order = :asc : @cim_order = :desc 
   (params.has_key?(:settlement_order) && params[:settlement_order] == :asc) ? @settlement_order = :asc : @settlement_order = :desc 
+  create_object_count_check_methods 'my_method', 'joel' 
+  create_object_count_check_methods 'my_private_method', 'joel' 
+ end
+
+ def create_object_count_check_methods method, arg
+  self.class.send(:define_method, method) do |arg|
+   "---> hello, #{arg} <---"
+  end
  end
 
 private

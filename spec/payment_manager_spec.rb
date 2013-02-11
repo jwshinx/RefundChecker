@@ -9,6 +9,9 @@ describe "PaymentManager" do
   it "should be valid" do
    payment_manager.should be_instance_of( PaymentManager )
   end
+  it "should do my-method" do
+   payment_manager.my_method('joel').should =~ /hello, joel/
+  end
   describe "settlement_count" do
    it "should be 2" do
     payment_manager.cim_count.should == 2
@@ -93,6 +96,7 @@ describe "PaymentManager" do
      end
     end
    end
+
   end
  end
 end
