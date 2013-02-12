@@ -12,19 +12,22 @@ class PaymentManager
   valid_count_check_methods_of :settlement, params
   check_valid_attributes params
   set_defaults params
-  
+  populate_payment_transactions
+ end
+
+ def populate_payment_transactions
   cim_count.times do |i|
-   object = new_object(:cim, {:txn_date => Date.today-i, :type => :purchase, :amount => 49 })
+   object = find_object(:cim, {:txn_date => Date.today-i, :type => :purchase, :amount => 49 })
    @transactions << object 
   end
   settlement_count.times do |i|
-   object = new_object(:settlement, {:txn_date => Date.today-i, :type => :auth_capture, :amount => 50 })
+   object = find_object(:settlement, {:txn_date => Date.today-i, :type => :auth_capture, :amount => 50 })
    @transactions << object 
   end
   @sorted_transactions = sort_array( @transactions, order_in, order_by )
  end
 
- def new_object(type, name)
+ def find_object(type, name)
   if type == :cim
    Cim.new(name)
   elsif type == :settlement
