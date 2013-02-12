@@ -6,8 +6,7 @@ class PaymentManager
   valid_count_check_methods_of :cim, params
   valid_count_check_methods_of :settlement, params
   check_valid_attributes params
-  set_count_defaults params 
-  set_order_defaults params 
+  set_defaults params
  end
 
  def valid_count_check_methods_of attribute, arg
@@ -21,6 +20,10 @@ class PaymentManager
 
 private
 
+ def set_defaults options
+  set_count_defaults options 
+  set_order_defaults options 
+ end
  def set_order_defaults options 
   (options.has_key?(:cim_order) && options[:cim_order] == :asc) ? @cim_order = :asc : @cim_order = :desc 
   (options.has_key?(:settlement_order) && options[:settlement_order] == :asc) ? @settlement_order = :asc : @settlement_order = :desc 
