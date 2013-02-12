@@ -9,6 +9,11 @@ describe "Settlement" do
   it "should be valid" do
    settlement.should be_instance_of( Settlement )
   end
+  subject { settlement }
+  its(:txn_date) { should be_instance_of( Date ) }
+  its(:amount) { should be_true }
+  its(:type) { should be_true }
+
   describe "when initializing" do
 
    describe "txn-date" do

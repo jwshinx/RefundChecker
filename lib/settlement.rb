@@ -1,4 +1,5 @@
 class Settlement
+ attr_reader :txn_date, :type, :amount
 
  def initialize params
   check_valid_attributes params

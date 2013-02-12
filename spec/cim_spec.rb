@@ -9,6 +9,11 @@ describe "Cim" do
   it "should be valid" do
    cim.should be_instance_of( Cim )
   end
+  subject { cim }
+  its(:txn_date) { should be_instance_of( Date ) }
+  its(:amount) { should be_true }
+  its(:type) { should be_true }
+  
   describe "when validating" do
 
    describe "txn-date" do

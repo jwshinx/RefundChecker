@@ -11,7 +11,7 @@ describe "PaymentManager" do
   end
   describe "settlement_count" do
    it "should be 2" do
-    payment_manager.cim_count.should == 2
+    payment_manager.settlement_count.should == 2
    end
   end
   describe "cim_count" do
@@ -19,14 +19,14 @@ describe "PaymentManager" do
     payment_manager.cim_count.should == 2
    end
   end
-  describe "cim_order" do
+  describe "order in" do
    it "should be desc" do
-    payment_manager.cim_order.should == :desc 
+    payment_manager.order_in.should == :desc 
    end
   end
-  describe "settlement_order" do
-   it "should be desc" do
-    payment_manager.settlement_order.should == :asc 
+  describe "order by attribute" do
+   it "should be *txn date*" do
+    payment_manager.order_by.should == :txn_date
    end
   end
 
@@ -48,17 +48,17 @@ describe "PaymentManager" do
     end
    end
 
-   describe "cim-order" do
+   describe "order in" do
     describe "not valid" do
      it "should default to *desc*" do
-      pm = FactoryGirl.build(:bad_cim_order_payment_manager) 
-      pm.cim_order.should == :desc
+      pm = FactoryGirl.build(:bad_order_in_payment_manager) 
+      pm.order_in.should == :desc
      end
     end
     describe "not provided" do
      it "should default to *desc*" do
-      pm = FactoryGirl.build(:no_cim_order_payment_manager) 
-      pm.cim_order.should == :desc
+      pm = FactoryGirl.build(:no_order_in_payment_manager) 
+      pm.order_in.should == :desc
      end
     end
    end
@@ -79,21 +79,33 @@ describe "PaymentManager" do
     end
    end 
 
-   describe "settlement-order" do
+   describe "order by" do
     describe "not valid" do
-     it "should default to *desc*" do
-      pm = FactoryGirl.build(:bad_settlement_order_payment_manager) 
-      pm.settlement_order.should == :desc
+     it "should default to *txn date*" do
+      pm = FactoryGirl.build(:bad_order_by_payment_manager) 
+      pm.order_by.should == :txn_date
      end
     end
     describe "not provided" do
-     it "should default to *desc*" do
-      pm = FactoryGirl.build(:no_settlement_order_payment_manager) 
-      pm.settlement_order.should == :desc
+     it "should default to *txn date*" do
+      pm = FactoryGirl.build(:no_order_by_payment_manager) 
+      pm.order_by.should == :txn_date
      end
     end
    end
 
+  end
+  describe "sorted cims and settlements" do
+   let(:payment_manager) { FactoryGirl.build(:payment_manager) }
+   it "should be saved in an array" do
+    payment_manager.sorted_transactions.should be_instance_of( Array )
+   end
+   it "should be sorted" do
+    payment_manager.sorted_transactions.length.should == 4
+    payment_manager.sorted_transactions.each do |txn|
+     puts "---> txn: #{txn.txn_date} - #{txn.inspect}"
+    end
+   end
   end
  end
 end
