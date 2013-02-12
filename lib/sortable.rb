@@ -9,10 +9,10 @@ module Sortable
     end
   end
 
-  def merge(left, right, order)
+  def merge(left, right, order, attribute)
     result = Array.new
     manage_all(left, right, order) do |x, y|
-      if(x.txn_date <= y.txn_date) then
+      if(x.send(attribute) <= y.send(attribute)) then
         result << left.first
         left.shift
       else
@@ -28,7 +28,7 @@ module Sortable
     return result
   end
 
-  def sort_array(array, order)
+  def sort_array(array, order, attribute)
     left = Array.new
     right = Array.new
     result = Array.new
@@ -43,9 +43,9 @@ module Sortable
       for x in midint...array.length do
           right << array[x]
       end
-      left = sort_array(left, order)
-      right = sort_array(right, order)
-      result = merge(left, right, order)
+      left = sort_array(left, order, attribute)
+      right = sort_array(right, order, attribute)
+      result = merge(left, right, order, attribute)
       return result
     end
   end

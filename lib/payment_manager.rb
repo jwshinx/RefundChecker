@@ -21,7 +21,7 @@ class PaymentManager
    object = new_object(:settlement, {:txn_date => Date.today-i, :type => :auth_capture, :amount => 50 })
    @transactions << object 
   end
-  @sorted_transactions = sort_array( @transactions, :order_in )
+  @sorted_transactions = sort_array( @transactions, order_in, order_by )
  end
 
  def new_object(type, name)
