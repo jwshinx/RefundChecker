@@ -2,18 +2,21 @@ class PaymentManager
  attr_reader :cim_count, :settlement_count, :cim_order, :settlement_order
 
  def initialize params
+  create_valid_count_check_methods_of :cim, params
+  create_valid_count_check_methods_of :settlement, params
   check_valid_attributes params
   params.has_key?(:cim_count) ? @cim_count = params[:cim_count] : @cim_count = 0
   params.has_key?(:settlement_count) ? @settlement_count = params[:settlement_count] : @settlement_count = 0
   (params.has_key?(:cim_order) && params[:cim_order] == :asc) ? @cim_order = :asc : @cim_order = :desc 
   (params.has_key?(:settlement_order) && params[:settlement_order] == :asc) ? @settlement_order = :asc : @settlement_order = :desc 
-  create_object_count_check_methods 'my_method', 'joel' 
-  create_object_count_check_methods 'my_private_method', 'joel' 
  end
 
- def create_object_count_check_methods method, arg
-  self.class.send(:define_method, method) do |arg|
-   "---> hello, #{arg} <---"
+ def create_valid_count_check_methods_of attribute, arg
+  self.class.send(:define_method, "#{attribute}_count_is_undefined_in") do |options|
+   !options.has_key?("#{attribute}_count".to_sym)
+  end
+  self.class.send(:define_method, "#{attribute}_count_is_number_in") do |options|
+   (options.has_key?("#{attribute}_count".to_sym) && options["#{attribute}_count".to_sym].instance_of?( Fixnum )) ? true : false
   end
  end
 
@@ -22,19 +25,6 @@ private
  def check_valid_attributes options
   raise 'Invalid cim count.' unless cim_count_is_undefined_in(options) || cim_count_is_number_in(options)
   raise 'Invalid settlement count.' unless settlement_count_is_undefined_in(options) || settlement_count_is_number_in(options)
- end
- 
- def cim_count_is_undefined_in options
-  !options.has_key?(:cim_count)
- end
- def cim_count_is_number_in options
-  (options.has_key?(:cim_count) && options[:cim_count].instance_of?( Fixnum )) ? true : false
- end
- def settlement_count_is_undefined_in options
-  !options.has_key?(:settlement_count)
- end
- def settlement_count_is_number_in options
-  (options.has_key?(:settlement_count) && options[:settlement_count].instance_of?( Fixnum )) ? true : false
  end
 
 end
