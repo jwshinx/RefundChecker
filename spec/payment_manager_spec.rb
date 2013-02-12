@@ -100,11 +100,16 @@ describe "PaymentManager" do
    it "should be saved in an array" do
     payment_manager.sorted_transactions.should be_instance_of( Array )
    end
-   it "should be sorted" do
-    payment_manager.sorted_transactions.length.should == 4
-    payment_manager.sorted_transactions.each do |txn|
-     puts "---> txn: #{txn.txn_date} - #{txn.inspect}"
+   it "should be sorted with most recent txn-date first" do
+    sorted_txns = payment_manager.sorted_transactions
+    sorted_txns.length.should == 4
+    is_sorted = true 
+    sorted_txns.each_with_index do |otxn, oi|
+     sorted_txns.each_with_index do |itxn, ii|
+      is_sorted = false if( ii > oi && itxn.txn_date > otxn.txn_date )
+     end
     end
+    is_sorted.should be_true
    end
   end
  end
