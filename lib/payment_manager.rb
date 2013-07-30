@@ -17,11 +17,11 @@ class PaymentManager
 
  def populate_payment_transactions
   cim_count.times do |i|
-   object = find_object(:cim, {:txn_date => Date.today-i, :type => :purchase, :amount => 49 })
+   object = find_object(:cim, {:txn_date => Date.today-i, :type => :purchase, :amount => '49' })
    @transactions << object 
   end
   settlement_count.times do |i|
-   object = find_object(:settlement, {:txn_date => Date.today-i, :type => :auth_capture, :amount => 50 })
+   object = find_object(:settlement, {:txn_date => Date.today-i, :type => :auth_capture, :amount => '50' })
    @transactions << object 
   end
   @sorted_transactions = sort_array( @transactions, order_in, order_by )
@@ -37,12 +37,12 @@ class PaymentManager
   end
  end
 
- def valid_count_check_methods_of attribute, arg
+ def valid_count_check_methods_of attribute , options
   self.class.send(:define_method, "#{attribute}_count_is_undefined_in") do |options|
    !options.has_key?("#{attribute}_count".to_sym)
   end
   self.class.send(:define_method, "#{attribute}_count_is_number_in") do |options|
-   (options.has_key?("#{attribute}_count".to_sym) && options["#{attribute}_count".to_sym].instance_of?( Fixnum )) ? true : false
+   (options.has_key?("#{attribute}_count".to_sym) && options["#{attribute}_count".to_sym] =~ /^\d+$/) ? true : false 
   end
  end
 
@@ -57,10 +57,10 @@ private
   (options.has_key?(:order_by) && options[:order_by] == :txn_date) ? @order_by = :txn_date : @order_by = :txn_date
  end
  def set_count_defaults options
-  options.has_key?(:cim_count) ? @cim_count = options[:cim_count] : @cim_count = 0
-  options.has_key?(:settlement_count) ? @settlement_count = options[:settlement_count] : @settlement_count = 0
+  options.has_key?(:cim_count) ? @cim_count = options[:cim_count].to_i : @cim_count = 0
+  options.has_key?(:settlement_count) ? @settlement_count = options[:settlement_count].to_i : @settlement_count = 0
  end
- def check_valid_attributes options
+ def check_valid_attributes options      
   raise 'Invalid cim count.' unless cim_count_is_undefined_in(options) || cim_count_is_number_in(options)
   raise 'Invalid settlement count.' unless settlement_count_is_undefined_in(options) || settlement_count_is_number_in(options)
  end

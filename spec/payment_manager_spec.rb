@@ -28,7 +28,28 @@ describe "PaymentManager" do
    it "should be *txn date*" do
     payment_manager.order_by.should == :txn_date
    end
+  end 
+  describe "the cim_count" do
+    it "is affirmed that it's not defined" do 
+      pm = FactoryGirl.build(:payment_manager)
+      pm.cim_count_is_undefined_in({}).should be_true      
+    end
+    it "is affirmed that it is defined" do 
+      pm = FactoryGirl.build(:payment_manager)
+      pm.cim_count_is_undefined_in({:cim_count => 44}).should be_false      
+    end
   end
+  describe "the cim_count" do
+    it "is affirmed that it's not defined" do 
+      pm = FactoryGirl.build(:payment_manager)
+      pm.cim_count_is_number_in({}).should be_false      
+    end
+    it "is affirmed that it is defined" do 
+      pm = FactoryGirl.build(:payment_manager)
+      pm.cim_count_is_number_in({:cim_count => 44}).should be_false      
+    end
+  end
+
 
   describe "when validating" do
 
@@ -102,14 +123,8 @@ describe "PaymentManager" do
    end
    it "should be sorted with most recent txn-date first" do
     sorted_txns = payment_manager.sorted_transactions
-    sorted_txns.length.should == 4
-    is_sorted = true 
-    sorted_txns.each_with_index do |otxn, oi|
-     sorted_txns.each_with_index do |itxn, ii|
-      is_sorted = false if( ii > oi && itxn.txn_date > otxn.txn_date )
-     end
-    end
-    is_sorted.should be_true
+    sorted_txns.length.should == 4        
+    sorted_txns.map{|t|t.txn_date}.should == sorted_txns.sort_by{ |a| a.txn_date }.reverse.map{|t| t.txn_date}
    end
   end
  end

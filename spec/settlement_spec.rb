@@ -21,7 +21,6 @@ describe "Settlement" do
      it "should raise exception" do
       expect { 
        s = FactoryGirl.build(:no_date_settlement) 
-       puts "---> s: #{s.inspect}"
       }.to raise_error(Exception, /Invalid date/)
      end
     end

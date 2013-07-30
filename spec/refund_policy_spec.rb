@@ -1,10 +1,50 @@
 require 'spec_helper'
-#require 'example_spec_helper'
-#require 'refund_eligibility_rules'
 
 describe RefundPolicy do
- #include ExampleSpecHelper
- #include RefundEligibilityRules 
+              
+  describe "normally" do      
+    before do
+      cust = double('customer')
+      rule = double('rule', :refundable_settlements_count => 2)
+      user = double('user')
+      @rp = RefundPolicy.new cust, rule, user
+    end
+    it "returns valid object" do
+      @rp.should be_true
+    end
+    describe "with valid amount, authorize?" do
+      it "returns true" do      
+        @rp.should_receive(:is_valid_refund_amount?).with(44).and_return(true)
+        @rp.authorize?(44).should == true
+      end
+    end                          
+    describe "when payments sum less than refund amount -- has_paid_more_than_refund_amount?" do
+      it "returns false" do      
+        @rp.should_receive(:total_cents_of_recent_settlements).and_return(2000)
+        @rp.has_paid_more_than_refund_amount?(44).should == false
+      end
+    end
+    describe "when payments sum greater than refund amount -- has_paid_more_than_refund_amount?" do
+      it "returns true" do      
+        @rp.should_receive(:total_cents_of_recent_settlements).and_return(5000)
+        @rp.has_paid_more_than_refund_amount?(44).should == true
+      end
+    end                          
+      
+    describe "total_cents_of_recent_settlements" do
+      it "returns sum of made payments" do
+        @rp.should_receive(:refund_against_settlement_transactions).and_return([double(:amount => 5), double(:amount => 5), double(:amount => 5)])
+        @rp.total_cents_of_recent_settlements.should == 15
+      end
+    end 
+    describe "refund_against_settlement_transactions" do
+      it "returns made payments which refunds can be applied" do
+        @rp.customer.stub_chain(:settlements, :order, :limit, :collect, :flatten).and_return('nothing')
+        @rp.refund_against_settlement_transactions.should == 'nothing'
+      end
+    end
+  end                       
+  
 
 =begin
  context "customer with $150 in 3 most recent paid settlements" do
